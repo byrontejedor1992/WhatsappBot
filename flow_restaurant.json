@@ -1,0 +1,121 @@
+{
+  "name": "Restaurant WhatsApp Bot",
+  "version": "1.2",
+  "start_state": "welcome",
+  "states": {
+    "welcome": {
+      "message": "🍽️ ¡Hola! Soy el asistente de *Restaurante Demo*.\nElige una opción:\n1) Reservar mesa\n2) Ver menú\n3) Promociones\n4) Ubicación y horario",
+      "expect": "choice_1_4",
+      "transitions": {
+        "1": "reserve_people",
+        "2": "menu",
+        "3": "promos",
+        "4": "location_hours"
+      }
+    },
+    "menu": {
+      "message": "📜 *Menú hoy*:\n- Lomo saltado $9.50\n- Ceviche mixto $8.00\n- Pasta al pesto $7.00\n\nEscribe *reservar* para reservar o *volver* para volver al inicio.",
+      "expect": "keyword",
+      "transitions": {
+        "reservar": "reserve_people",
+        "volver": "welcome",
+        "*": "fallback_menu"
+      }
+    },
+    "fallback_menu": {
+      "message": "No te entendí. Escribe *reservar* o *volver*.",
+      "expect": "keyword",
+      "transitions": {
+        "reservar": "reserve_people",
+        "volver": "welcome",
+        "*": "menu"
+      }
+    },
+    "promos": {
+      "message": "🎁 *Promoción de la semana*: 2x1 en bebidas con cualquier plato fuerte de L–J, 18:00–20:00.\nEscribe *reservar* para reservar o *volver* para volver al inicio.",
+      "expect": "keyword",
+      "transitions": {
+        "reservar": "reserve_people",
+        "volver": "welcome",
+        "*": "promos"
+      }
+    },
+    "location_hours": {
+      "message": "📍 *Estamos en:* Av. Principal 123.\n🕒 *Horario:* Lun–Dom 12:00–22:00.\nEscribe *reservar* para reservar o *volver* para volver al inicio.",
+      "expect": "keyword",
+      "transitions": {
+        "reservar": "reserve_people",
+        "volver": "welcome",
+        "*": "location_hours"
+      }
+    },
+    "reserve_people": {
+      "message": "Genial, vamos a reservar. ¿Para cuántas personas? (1–10)",
+      "expect": "number_1_10",
+      "transitions": {
+        "valid": "reserve_date",
+        "invalid": "reserve_people"
+      }
+    },
+    "reserve_date": {
+      "message": "¿Para qué fecha? (AAAA-MM-DD)",
+      "expect": "date_iso",
+      "transitions": {
+        "valid": "reserve_time",
+        "invalid": "reserve_date"
+      }
+    },
+    "reserve_time": {
+      "message": "¿A qué hora? (13:00, 15:00, 19:00, 21:00)",
+      "expect": "choice_time",
+      "transitions": {
+        "13:00": "reserve_name",
+        "15:00": "reserve_name",
+        "19:00": "reserve_name",
+        "21:00": "reserve_name",
+        "invalid": "reserve_time"
+      }
+    },
+    "reserve_name": {
+      "message": "Perfecto. ¿A nombre de quién registramos la reserva?",
+      "expect": "text",
+      "transitions": {
+        "valid": "confirm",
+        "invalid": "reserve_name"
+      }
+    },
+    "confirm": {
+      "message": "✅ *Reserva lista*:\nNombre: {name}\nPersonas: {people}\nFecha: {date}\nHora: {time}\n\n¿Confirmas? (sí/no)",
+      "expect": "yes_no",
+      "transitions": {
+        "sí": "confirmed",
+        "si": "confirmed",
+        "no": "cancelled"
+      }
+    },
+    "confirmed": {
+      "message": "🎉 ¡Listo {name}! Tu mesa quedó reservada. Te enviaremos un recordatorio el mismo día.\nEscribe *menú* para ver opciones o *fin* para terminar.",
+      "expect": "keyword",
+      "transitions": {
+        "menú": "menu",
+        "menu": "menu",
+        "fin": "end",
+        "*": "end"
+      }
+    },
+    "cancelled": {
+      "message": "Reserva cancelada. ¿Quieres empezar de nuevo? Escribe *reservar* o *volver*.",
+      "expect": "keyword",
+      "transitions": {
+        "reservar": "reserve_people",
+        "volver": "welcome",
+        "*": "welcome"
+      }
+    },
+    "end": {
+      "message": "Gracias por escribirnos 👋",
+      "expect": "end",
+      "transitions": {}
+    }
+  }
+}
