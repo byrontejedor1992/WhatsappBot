@@ -73,6 +73,7 @@ async function saveReservation(ctx, from) {
 }
 
 export async function handleIncomingMessage(from, inputTextOrButtonId) {
+  logger.info(`Mensaje entrante de: ${from}. Input: ${inputTextOrButtonId}`);
   let session = getSession(from);
   if (!session) {
     session = { state: flow.start_state, ctx: {} };
